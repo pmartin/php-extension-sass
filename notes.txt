@@ -1,0 +1,5 @@
+
+$HOME/bin/php-5.3-debug/bin/phpize
+./configure --enable-sass --with-php-config=$HOME/bin/php-5.3-debug/bin/php-config
+make
+$HOME/bin/php-5.3-debug/bin/php -dextension=modules/sass.so -f ./test.php

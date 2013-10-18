@@ -1,0 +1,3 @@
+<?php
+
+sass_test();
