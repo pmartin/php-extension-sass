@@ -27,10 +27,11 @@
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.1078030814" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1723848651" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
-								<option id="gnu.c.compiler.option.include.paths.1036056472" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.c.compiler.option.include.paths.1036056472" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/home/squale/bin/php-5.3-debug/include/php/main/"/>
 									<listOptionValue builtIn="false" value="/home/squale/bin/php-5.3-debug/include/php/Zend/"/>
 									<listOptionValue builtIn="false" value="/home/squale/bin/php-5.3-debug/include/php/"/>
+									<listOptionValue builtIn="false" value="/home/squale/developpement/libsass"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1118794182" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

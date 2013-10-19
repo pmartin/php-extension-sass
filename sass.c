@@ -30,7 +30,22 @@ zend_function_entry sass_functions[] =
 
 PHP_FUNCTION(sass_test)
 {
-    php_printf("plop\n");
+    struct sass_context* ctx = sass_new_context();
+
+    struct sass_options options;
+    options.output_style = SASS_STYLE_EXPANDED;
+    options.source_comments = 0;
+    options.image_path = "images";
+    options.include_paths = "";
+    ctx->options = options;
+
+    ctx->source_string = ".test {color: red;}";
+
+    sass_compile(ctx);
+
+    php_printf("/* RESULT: */\n%s/* END RESULT */\n", ctx->output_string);
+
+    sass_free_file_context(ctx);
 }
 
 

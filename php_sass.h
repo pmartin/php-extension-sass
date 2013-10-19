@@ -9,6 +9,8 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 
+#include "sass_interface.h"
+
 extern zend_module_entry sass_module_entry;
 extern zend_function_entry sass_functions[];
 
