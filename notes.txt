@@ -6,25 +6,46 @@ C program that uses the static library: https://github.com/hcatlin/sassc
 => Could be considered as a base to build upon
 
 
-Compiling the (static) libsass library:
-TODO: use a git submodule, instead of "manually" cloning
+Getting the sources of the extension (+ the library):
 
-    cd $HOME/developpement
-    git clone https://github.com/hcatlin/libsass.git
+    git clone ... php-extension-sass
+    git submodule init
+    git submodule update
+
+
+Compiling the (static) libsass.a library:
+Its sources are in a git submodule: libsass/
+
+    cd libsass
     make
     #  => this creates the libsass.a static library
+    # /!\ Needs to be run after a 'make clean' for the extension
 
 
-Configuring and compiling the extension:
+Configuring and compiling the extension (PHP 5.3):
 
     $HOME/bin/php-5.3-debug/bin/phpize
-    ./configure --with-sass=/home/squale/developpement/libsass \
+    ./configure --with-sass=./libsass \
         --with-php-config=$HOME/bin/php-5.3-debug/bin/php-config
     make
+    make test
+
+Configuring and compiling the extension (PHP 5.4):
+
+    $HOME/bin/php-5.4-debug/bin/phpize
+    ./configure --with-sass=./libsass \
+        --with-php-config=$HOME/bin/php-5.4-debug/bin/php-config
+    make
+    make test
+
+
+Running a few examples:
+
     $HOME/bin/php-5.3-debug/bin/php -dextension=modules/sass.so -f ./test.php
+    $HOME/bin/php-5.4-debug/bin/php -dextension=modules/sass.so -f ./test.php
 
 
-Executing the tests:
+Executing the tests without any interaction:
 
     export NO_INTERACTION=1
     make test
