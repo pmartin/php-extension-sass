@@ -10,7 +10,7 @@ zend_module_entry sass_module_entry = {
     NULL, /* Module shutdown */
     NULL, /* Request init */
     NULL, /* Request shutdown */
-    NULL, /* Module information */
+    PHP_MINFO(sass), /* Module information */
     "0.1", /* Replace with version number for your extension */
     STANDARD_MODULE_PROPERTIES
 };
@@ -322,6 +322,15 @@ PHP_METHOD(Sass, compileFile)
     }
 
     sass_free_file_context(ctx);
+}
+
+
+PHP_MINFO_FUNCTION(sass)
+{
+    php_info_print_table_start();
+    php_info_print_table_header(2, "Sass support", "enabled");
+    php_info_print_table_row(2, "Incorporates libsass", "https://github.com/hcatlin/libsass");
+    php_info_print_table_end();
 }
 
 

@@ -18,6 +18,7 @@ extern zend_module_entry sass_module_entry;
 
 
 PHP_MINIT_FUNCTION(sass);
+PHP_MINFO_FUNCTION(sass);
 
 
 extern zend_class_entry *ce_Sass;
