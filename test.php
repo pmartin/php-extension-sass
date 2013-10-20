@@ -1,6 +1,11 @@
 <?php
 
 $sass = new Sass();
+$sass
+	->setSourceComments(Sass::SOURCE_COMMENTS_MAP)
+	->setOutputStyle(Sass::STYLE_EXPANDED)
+;
+
 $scss = <<<'SCSS'
 $color1: red;
 $defaultSize: 12px;

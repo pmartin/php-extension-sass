@@ -34,6 +34,8 @@ int sass_object_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC);
 void sass_object_free(void *_object TSRMLS_DC);
 
 PHP_METHOD(Sass, __construct);
+PHP_METHOD(Sass, setOutputStyle);
+PHP_METHOD(Sass, setSourceComments);
 PHP_METHOD(Sass, compileString);
 
 

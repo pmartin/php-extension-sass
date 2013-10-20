@@ -23,14 +23,23 @@ static zend_object_handlers sass_object_handlers;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sass___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_setOutputStyle, 0, 0, 1)
+    ZEND_ARG_INFO(0, outputStyle)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_setSourceComments, 0, 0, 1)
+    ZEND_ARG_INFO(0, sourceComments)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_compileString, 0, 0, 1)
-    ZEND_ARG_INFO(0, css_string)
+    ZEND_ARG_INFO(0, scss)
 ZEND_END_ARG_INFO()
 
 
 static zend_function_entry sass_class_functions[] = {
     PHP_ME(Sass, __construct, arginfo_sass___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Sass, setOutputStyle, arginfo_sass_setOutputStyle, ZEND_ACC_PUBLIC)
+    PHP_ME(Sass, setSourceComments, arginfo_sass_setSourceComments, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, compileString, arginfo_sass_compileString, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
@@ -47,6 +56,15 @@ PHP_MINIT_FUNCTION(sass)
     INIT_CLASS_ENTRY(ce, "Sass", sass_class_functions);
     ce.create_object = sass_object_new;
     ce_Sass = zend_register_internal_class(&ce TSRMLS_CC);
+
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("STYLE_NESTED"), SASS_STYLE_NESTED TSRMLS_CC);
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("STYLE_EXPANDED"), SASS_STYLE_EXPANDED TSRMLS_CC);
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("STYLE_COMPACT"), SASS_STYLE_COMPACT TSRMLS_CC);
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("STYLE_COMPRESSED"), SASS_STYLE_COMPRESSED TSRMLS_CC);
+
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("SOURCE_COMMENTS_NONE"), SASS_SOURCE_COMMENTS_NONE TSRMLS_CC);
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("SOURCE_COMMENTS_DEFAULT"), SASS_SOURCE_COMMENTS_DEFAULT TSRMLS_CC);
+    zend_declare_class_constant_long(ce_Sass, ZEND_STRL("SOURCE_COMMENTS_MAP"), SASS_SOURCE_COMMENTS_MAP TSRMLS_CC);
 
     return SUCCESS;
 }
@@ -101,6 +119,56 @@ PHP_METHOD(Sass, __construct)
     object->options.source_comments = 0;
     object->options.image_path = "images";
     object->options.include_paths = "";
+}
+
+
+PHP_METHOD(Sass, setOutputStyle)
+{
+    long style;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &style) == FAILURE)
+    {
+        return;
+    }
+
+    if (style != SASS_STYLE_NESTED && style != SASS_STYLE_EXPANDED
+            && style != SASS_STYLE_COMPACT && style != SASS_STYLE_COMPRESSED)
+    {
+        char *msg;
+        spprintf(&msg, 0, "Invalid style: %ld", style);
+        zend_throw_exception(spl_ce_InvalidArgumentException, msg, 1 TSRMLS_CC);
+        efree(msg);
+    }
+
+    sass_object *object = (sass_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+    object->options.output_style = style;
+
+    RETURN_ZVAL(getThis(), 1, 0);
+}
+
+
+PHP_METHOD(Sass, setSourceComments)
+{
+    long source_comments;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l",
+            &source_comments) == FAILURE)
+    {
+        return;
+    }
+
+    if (source_comments != SASS_SOURCE_COMMENTS_NONE
+            && source_comments != SASS_SOURCE_COMMENTS_DEFAULT
+            && source_comments != SASS_SOURCE_COMMENTS_MAP)
+    {
+        char *msg;
+        spprintf(&msg, 0, "Invalid sourceComments: %ld", source_comments);
+        zend_throw_exception(spl_ce_InvalidArgumentException, msg, 1 TSRMLS_CC);
+        efree(msg);
+    }
+
+    sass_object *object = (sass_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+    object->options.source_comments = source_comments;
+
+    RETURN_ZVAL(getThis(), 1, 0);
 }
 
 
