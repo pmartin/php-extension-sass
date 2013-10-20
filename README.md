@@ -91,7 +91,7 @@ This class exports the following constants:
    * `Sass::STYLE_EXPANDED`
    * `Sass::STYLE_COMPACT`
    * `Sass::STYLE_COMPRESSED`
- * Possible values for the `sourceComments` options:
+ * Possible values for the `sourceComments` option:
    * `Sass::SOURCE_COMMENTS_NONE`
    * `Sass::SOURCE_COMMENTS_DEFAULT`
    * `Sass::SOURCE_COMMENTS_MAP`
@@ -114,7 +114,7 @@ This class provides the following methods:
    * Throws an `InvalidArgumentException` if `$outputStyle` is not one of the `Sass::STYLE_*` constants.
  * `Sass setSourceComments(int $sourceComments)`
    * Configures what kind of source comments, if any, must be generated.
-   * Throws an InvalidArgumentException if $sourceComments is not one of the `Sass::SOURCE_COMMENTS_*` constants.
+   * Throws an `InvalidArgumentException` if `$sourceComments` is not one of the `Sass::SOURCE_COMMENTS_*` constants.
  * `Sass setIncludePaths(string $includePaths)`
    * Configures the include paths in which the libsass' compiler will look for imported files.
    * Can contain several directories paths, separated by a `:` *(on Linux)* or a `;` *(on Windows)*.
