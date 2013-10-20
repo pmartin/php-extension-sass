@@ -2,13 +2,22 @@
 
 $sass = new Sass();
 $sass
-	->setSourceComments(Sass::SOURCE_COMMENTS_MAP)
+	->setSourceComments(Sass::SOURCE_COMMENTS_NONE)
 	->setOutputStyle(Sass::STYLE_EXPANDED)
+	->setIncludePaths('/tmp/pmn/')
 ;
 
-$scss = <<<'SCSS'
+$filePathIn = '/tmp/test-scss-in';
+$filePathInIncluded = '/tmp/pmn/test-scss-included';
+
+$included = <<<'SCSS'
 $color1: red;
 $defaultSize: 12px;
+SCSS;
+file_put_contents($filePathInIncluded, $included);
+
+$scss = <<<'SCSS'
+@import 'test-scss-included';
 .test {
 	color: $color1;
 	font-size: $defaultSize;
@@ -17,21 +26,10 @@ $defaultSize: 12px;
 	}
 }
 SCSS;
-
-$filePathIn = tempnam(sys_get_temp_dir(), 'scss_');
-$filePathOut = tempnam(sys_get_temp_dir(), 'css_');
 file_put_contents($filePathIn, $scss);
 
 try {
-	//$css = $sass->compileString($scss);
-	
-	//*
-	$sass->compileFile($filePathIn, $filePathOut);
-	$css = file_get_contents($filePathOut);
-	/*/
 	$css = $sass->compileFile($filePathIn);
-	//*/
-	
 	echo "RESULT: ";
 	var_dump($css);
 }
@@ -41,5 +39,5 @@ catch (Exception $e) {
 }
 
 file_exists($filePathIn) && unlink($filePathIn);
-file_exists($filePathOut) && unlink($filePathOut);
+file_exists($filePathInIncluded) && unlink($filePathInIncluded);
 

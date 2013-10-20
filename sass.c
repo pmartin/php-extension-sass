@@ -31,6 +31,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_setSourceComments, 0, 0, 1)
     ZEND_ARG_INFO(0, sourceComments)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_setIncludePaths, 0, 0, 1)
+    ZEND_ARG_INFO(0, includePaths)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_compileString, 0, 0, 1)
     ZEND_ARG_INFO(0, scss)
 ZEND_END_ARG_INFO()
@@ -45,6 +49,7 @@ static zend_function_entry sass_class_functions[] = {
     PHP_ME(Sass, __construct, arginfo_sass___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(Sass, setOutputStyle, arginfo_sass_setOutputStyle, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, setSourceComments, arginfo_sass_setSourceComments, ZEND_ACC_PUBLIC)
+    PHP_ME(Sass, setIncludePaths, arginfo_sass_setIncludePaths, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, compileString, arginfo_sass_compileString, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, compileFile, arginfo_sass_compileFile, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
@@ -102,6 +107,12 @@ void sass_object_free(void *_object TSRMLS_DC)
 {
     sass_object *object = (sass_object *)_object;
     zend_object_std_dtor(&object->zo TSRMLS_CC);
+
+    if (object->options.include_paths != NULL)
+    {
+        efree(object->options.include_paths);
+    }
+
     efree(object);
 }
 
@@ -124,7 +135,7 @@ PHP_METHOD(Sass, __construct)
     object->options.output_style = SASS_STYLE_EXPANDED;
     object->options.source_comments = 0;
     object->options.image_path = "images";
-    object->options.include_paths = "";
+    object->options.include_paths = NULL;
 }
 
 
@@ -173,6 +184,31 @@ PHP_METHOD(Sass, setSourceComments)
 
     sass_object *object = (sass_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
     object->options.source_comments = source_comments;
+
+    RETURN_ZVAL(getThis(), 1, 0);
+}
+
+
+PHP_METHOD(Sass, setIncludePaths)
+{
+    char *paths;
+    int paths_length;
+    if (zend_parse_parameters( ZEND_NUM_ARGS() TSRMLS_CC, "s",
+            &paths, &paths_length ) == FAILURE)
+    {
+        return;
+    }
+
+    sass_object *object = (sass_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+    if (object->options.include_paths != NULL)
+    {
+        efree(object->options.include_paths);
+    }
+    object->options.include_paths = emalloc(paths_length + 1);
+
+    strncpy(object->options.include_paths, paths, paths_length);
+    object->options.include_paths[paths_length] = '\0';
 
     RETURN_ZVAL(getThis(), 1, 0);
 }
