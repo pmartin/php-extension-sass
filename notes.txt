@@ -23,3 +23,8 @@ Configuring and compiling the extension:
     make
     $HOME/bin/php-5.3-debug/bin/php -dextension=modules/sass.so -f ./test.php
 
+
+Executing the tests:
+
+    export NO_INTERACTION=1
+    make test
