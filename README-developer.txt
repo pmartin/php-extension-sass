@@ -1,14 +1,6 @@
-
-Library libsass sources: https://github.com/hcatlin/libsass
-/!\ Doesn't compile to a shared library; only a static one.
-
-C program that uses the static library: https://github.com/hcatlin/sassc
-=> Could be considered as a base to build upon
-
-
 Getting the sources of the extension (+ the library):
 
-    git clone ... php-extension-sass
+    git clone .git@github.com:pmartin/php-extension-sass.git
     git submodule init
     git submodule update
 
@@ -39,13 +31,7 @@ Configuring and compiling the extension (PHP 5.4):
     make test
 
 
-Running a few examples:
-
-    $HOME/bin/php-5.3-debug/bin/php -dextension=modules/sass.so -f ./test.php
-    $HOME/bin/php-5.4-debug/bin/php -dextension=modules/sass.so -f ./test.php
-
-
-Executing the tests without any interaction:
+To execute the tests without any interaction:
 
     export NO_INTERACTION=1
     make test
