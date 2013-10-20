@@ -35,12 +35,18 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_compileString, 0, 0, 1)
     ZEND_ARG_INFO(0, scss)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sass_compileFile, 0, 0, 1)
+    ZEND_ARG_INFO(0, inputFile)
+    ZEND_ARG_INFO(0, outputFile)
+ZEND_END_ARG_INFO()
+
 
 static zend_function_entry sass_class_functions[] = {
     PHP_ME(Sass, __construct, arginfo_sass___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(Sass, setOutputStyle, arginfo_sass_setOutputStyle, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, setSourceComments, arginfo_sass_setSourceComments, ZEND_ACC_PUBLIC)
     PHP_ME(Sass, compileString, arginfo_sass_compileString, ZEND_ACC_PUBLIC)
+    PHP_ME(Sass, compileFile, arginfo_sass_compileFile, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -208,6 +214,78 @@ PHP_METHOD(Sass, compileString)
     }
 
     sass_free_context(ctx);
+}
+
+
+PHP_METHOD(Sass, compileFile)
+{
+    char *input_path, *output_path = NULL;
+    int input_path_length, output_path_length = 0;
+    if (zend_parse_parameters( ZEND_NUM_ARGS() TSRMLS_CC, "s|s",
+            &input_path, &input_path_length,
+            &output_path, &output_path_length ) == FAILURE)
+    {
+        return;
+    }
+
+    // Transform input_path to a standard C null-terminated string
+    erealloc(input_path, input_path_length + 1);
+    input_path[input_path_length] = '\0';
+
+    if (access(input_path, R_OK) == -1)
+    {
+        char *msg;
+        spprintf(&msg, 0, "Cannot read file %s", input_path);
+        zend_throw_exception(spl_ce_InvalidArgumentException, msg, 2 TSRMLS_CC);
+        efree(msg);
+        return;
+    }
+
+    sass_object *object = (sass_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+    struct sass_file_context *ctx = sass_new_file_context();
+    ctx->options = object->options;
+    ctx->input_path = input_path;
+
+    sass_compile_file(ctx);
+
+    if (ctx->error_status == 0)
+    {
+        if (output_path == NULL)
+        {
+            RETVAL_STRING(ctx->output_string, 1);
+        }
+        else
+        {
+            // Transform output_path to a standard C null-terminated string
+            erealloc(output_path, output_path_length + 1);
+            output_path[output_path_length] = '\0';
+
+            FILE *out_file = fopen(output_path, "w");
+            if (out_file)
+            {
+                fputs(ctx->output_string, out_file);
+                fclose(out_file);
+            }
+            else
+            {
+                char *msg;
+                spprintf(&msg, 0, "Cannot write to %s", output_path);
+                zend_throw_exception(spl_ce_RuntimeException, msg, 3 TSRMLS_CC);
+                efree(msg);
+            }
+        }
+    }
+    else
+    {
+        char *msg = php_trim(ctx->error_message, strlen(ctx->error_message),
+                NULL, 0, NULL, 3 TSRMLS_CC);
+        zend_throw_exception(spl_ce_RuntimeException, msg,
+                ctx->error_status TSRMLS_CC);
+        efree(msg);
+    }
+
+    sass_free_file_context(ctx);
 }
 
 

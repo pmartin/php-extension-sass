@@ -37,6 +37,7 @@ PHP_METHOD(Sass, __construct);
 PHP_METHOD(Sass, setOutputStyle);
 PHP_METHOD(Sass, setSourceComments);
 PHP_METHOD(Sass, compileString);
+PHP_METHOD(Sass, compileFile);
 
 
 #endif /* SASS_H_ */
