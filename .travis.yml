@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - "5.3"
+  - "5.4"
+
+install:
+  - sudo apt-get install valgrind
+
+env:
+  - REPORT_EXIT_STATUS=1 NO_INTERACTION=1
+
+before_script:
+  - git submodule init ; git submodule update ; cd libsass ; make ; cd ..
+  - phpize && ./configure --with-sass=./libsass && make && sudo make install
+  - echo 'extension = sass.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+script:
+  - make test
+
+notifications:
+  email:
+    - contact@pascal-martin.fr
