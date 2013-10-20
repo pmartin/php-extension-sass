@@ -105,7 +105,7 @@ This class provides the following methods:
    * Throws a `RuntimeException` if the SCSS string was invalid, and/or failed to be compiled.
  * `string|null compileFile(string $inputFile [, string $outputFile])`
    * If `$outputFile` is given, this method compiles the SCSS content of `$inputFile` to the CSS file `$outputFile`.
-   * If `$outputFile` is not passed, the method compiles the SCSS content of $inputFile and returns the compiled CSS.
+   * If `$outputFile` is not passed, the method compiles the SCSS content of `$inputFile` and returns the compiled CSS as a string.
    * Throws an `InvalidArgumentException` if `$inputFile` cannot be read,
    * Throws a `RuntimeException` if `$outputFile` cannot be written,
    * Throws a `RuntimeException` if the SCSS string was invalid, and/or failed to be compiled.
