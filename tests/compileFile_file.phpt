@@ -6,7 +6,7 @@ $inputFile = __DIR__ . '/test-scss-in';
 $scss = '$myColor: red; .test {color: $myColor}';
 file_put_contents($inputFile, $scss);
 
-$outputFile = __DIR__ . 'test-css-out';
+$outputFile = __DIR__ . '/test-css-out';
 
 $sass = new Sass();
 $return = $sass->compileFile($inputFile, $outputFile);
@@ -23,7 +23,7 @@ string(24) ".test {
 --CLEAN--
 <?php
 $inputFile = __DIR__ . '/test-scss-in';
-$outputFile = __DIR__ . 'test-css-out';
+$outputFile = __DIR__ . '/test-css-out';
 file_exists($inputFile) && unlink($inputFile);
 file_exists($outputFile) && unlink($outputFile);
 ?>
